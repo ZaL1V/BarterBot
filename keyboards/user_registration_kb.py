@@ -1,8 +1,9 @@
 from aiogram.types import (
     KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton, WebAppData
 )
-from .user_registration_btn_text import (
-    language_selection_btn_text, get_geo_btn_text
+from text import (
+    language_selection_btn_text, get_geo_btn_text, item_search_btn_text,
+    user_profile_btn_text, add_item_btn_text
 )
 
 
@@ -35,3 +36,12 @@ def build_get_location_keyboard(language):
     geo_kb = ReplyKeyboardMarkup(resize_keyboard=True)
     geo_kb.add(geo_button)
     return geo_kb
+
+
+def build_general_menu_keyboard(language):
+    search_btn = KeyboardButton(item_search_btn_text[language])
+    add_item_btn = KeyboardButton(add_item_btn_text[language])
+    user_profile_btn = KeyboardButton(user_profile_btn_text[language])
+    general_menu_kb = ReplyKeyboardMarkup(resize_keyboard=True)
+    general_menu_kb.add(search_btn).add(user_profile_btn, add_item_btn)
+    return general_menu_kb

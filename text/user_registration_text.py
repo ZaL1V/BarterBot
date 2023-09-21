@@ -57,3 +57,34 @@ input_user_city_type_error_text = {
 🤔 Кажется, вы не ввели название города. Пожалуйста, введите корректное название города. 🌆
     '''
 }
+
+main_description_text = {
+    'uk': '''
+🌍 Привіт! Я - BarterBot. 🤖 Я створений для обміну різними речами між користувачами. 💼↔️📚 
+
+🤗 Обмінюйтеся тим, що дійсно є у вас і що ви готові віддати іншому! Будь ласка, не додавайте предмети, яких у вас немає чи які ви не бажаєте обміняти. 🚫🎩 
+
+💡 Надійність та чесність - наш пріоритет. Давайте створювати спільноту, де кожен може безпечно обмінюватися! 🔄🤝
+    ''',
+    'en': """
+🌍 Hello! I'm BarterBot. 🤖 I'm designed for exchanging various items between users. 💼↔️📚 
+
+🤗 Exchange only items you truly possess and are willing to give to another! Please do not add items that you don't own or don't want to exchange. 🚫🎩 
+
+💡 Reliability and honesty are our priorities. Let's create a community where everyone can safely exchange! 🔄🤝
+    """,
+    'pl': '''
+🌍 Cześć! Jestem BarterBot. 🤖 Zostałem stworzony do wymiany różnych przedmiotów między użytkownikami. 💼↔️📚 
+
+🤗 Wymieniaj się tylko tym, co naprawdę posiadasz i jesteś gotów oddać innemu! Proszę, nie dodawaj przedmiotów, których nie masz lub których nie chcesz wymieniać. 🚫🎩 
+
+💡 Niezawodność i uczciwość to nasze priorytety. Twórzmy społeczność, w której każdy może bezpiecznie wymieniać się! 🔄🤝
+    ''',
+    'ru': '''
+🌍 Привет! Я - BarterBot. 🤖 Я создан для обмена различными вещами между пользователями. 💼↔️📚 
+
+🤗 Обменивайтесь только тем, что действительно у вас есть и что вы готовы отдать другому! Пожалуйста, не добавляйте предметы, которых у вас нет или которые вы не хотите менять. 🚫🎩 
+
+💡 Надёжность и честность - наши приоритеты. Давайте создавать сообщество, где каждый может безопасно обмениваться! 🔄🤝
+    '''
+}

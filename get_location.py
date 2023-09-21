@@ -9,10 +9,9 @@ def get_location_by_city(city):
         lat = data[0].get('lat')
         lon = data[0].get('lon')
         
-        if lat and lon:
-            return (lat, lon)
+        return lat, lon
     
-    return (None, None)
+    return None, None
 
 
 def get_location_by_coordinates(lat, lon, language):

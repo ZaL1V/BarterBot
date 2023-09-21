@@ -5,9 +5,9 @@ from aiogram.dispatcher.filters import Text
 from functools import partial
 
 from create_bot import dp, bot
-from .user_variables_text import (
+from text import (
     choose_a_language_text, input_location_text, input_user_city_name_error_text,
-    input_user_city_type_error_text,
+    input_user_city_type_error_text, main_description_text
     )
 from .state_groups import MainState
 from database import (
@@ -15,7 +15,8 @@ from database import (
     )
 from keyboards import (
     build_choose_a_language_keyboard,
-    build_get_location_keyboard
+    build_get_location_keyboard,
+    build_general_menu_keyboard
 )
 from get_location import get_location_by_city, get_location_by_coordinates
 
@@ -74,6 +75,8 @@ async def choose_a_language(query: types.CallbackQuery):
 async def input_user_city_location(message: types.Message, state: FSMContext):
     user = session.query(User).get(message.from_user.id)
     city = str(message.text)
+    get_location_kb = build_get_location_keyboard(user.language)
+    general_menu_kb = build_general_menu_keyboard(user.language)
     if city.replace(" ", "").isalpha():
         latitude, longitude = get_location_by_city(city)
         
@@ -86,18 +89,21 @@ async def input_user_city_location(message: types.Message, state: FSMContext):
             await state.finish()
             await bot.send_message(
                 message.chat.id,
-                'test'
+                main_description_text[user.language],
+                reply_markup=general_menu_kb
                 )
             
         else:
             await bot.send_message(
                 message.chat.id,
-                input_user_city_name_error_text[user.language]
+                input_user_city_name_error_text[user.language],
+                reply_markup=get_location_kb
             )
     else:
         await bot.send_message(
             message.chat.id,
-            input_user_city_type_error_text[user.language]
+            input_user_city_type_error_text[user.language],
+            reply_markup=get_location_kb
         )
 
 
@@ -111,9 +117,11 @@ async def input_user_coordinates_location(message: types.Message):
     user.long_itude = longitude
     user.status = 'active'
     session.commit()
+    general_menu_kb = build_general_menu_keyboard(user.language)
     await bot.send_message(
         message.chat.id,
-        'test'
+        main_description_text[user.language],
+        reply_markup=general_menu_kb
         )
 
 
