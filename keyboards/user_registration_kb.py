@@ -1,5 +1,5 @@
 from aiogram.types import (
-    KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton, WebAppData
+    KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
 )
 from text import (
     language_selection_btn_text, get_geo_btn_text, item_search_btn_text,

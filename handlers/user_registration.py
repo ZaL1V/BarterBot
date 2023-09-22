@@ -7,7 +7,8 @@ from functools import partial
 from create_bot import dp, bot
 from text import (
     choose_a_language_text, input_location_text, input_user_city_name_error_text,
-    input_user_city_type_error_text, main_description_text
+    input_user_city_type_error_text, main_description_text, successful_language_change_text,
+    successful_city_change_text
     )
 from .state_groups import MainState
 from database import (
@@ -63,13 +64,21 @@ async def choose_a_language(query: types.CallbackQuery):
         query.message.message_id,
         reply_markup=None
     )
-    get_location_kb = build_get_location_keyboard(user.language)
-    await bot.send_message(
-        query.message.chat.id,
-        input_location_text[user.language],
-        reply_markup=get_location_kb
-    )
-    await MainState.get_location.set()
+    if user.status == 'not_verified':
+        get_location_kb = build_get_location_keyboard(user.language)
+        await bot.send_message(
+            query.message.chat.id,
+            input_location_text[user.language],
+            reply_markup=get_location_kb
+        )
+        await MainState.get_location.set()
+    else:
+        general_menu_kb = build_general_menu_keyboard(user.language)
+        await bot.send_message(
+            query.message.chat.id,
+            successful_language_change_text[language_key],
+            reply_markup=general_menu_kb
+        )
 
 
 async def input_user_city_location(message: types.Message, state: FSMContext):
@@ -84,15 +93,22 @@ async def input_user_city_location(message: types.Message, state: FSMContext):
             user.address = city
             user.lat_itude = latitude
             user.long_itude = longitude
-            user.status = 'active'
             session.commit()
             await state.finish()
-            await bot.send_message(
-                message.chat.id,
-                main_description_text[user.language],
-                reply_markup=general_menu_kb
-                )
-            
+            if user.status == 'not_verified':
+                user.status = 'active'
+                session.commit()
+                await bot.send_message(
+                    message.chat.id,
+                    main_description_text[user.language],
+                    reply_markup=general_menu_kb
+                    )
+            else:
+                await bot.send_message(
+                    message.chat.id,
+                    successful_city_change_text[user.language].format(city),
+                    reply_markup=general_menu_kb
+                    )
         else:
             await bot.send_message(
                 message.chat.id,
@@ -102,12 +118,12 @@ async def input_user_city_location(message: types.Message, state: FSMContext):
     else:
         await bot.send_message(
             message.chat.id,
-            input_user_city_type_error_text[user.language],
+            successful_language_change_text[user.language],
             reply_markup=get_location_kb
         )
 
 
-async def input_user_coordinates_location(message: types.Message):
+async def input_user_coordinates_location(message: types.Message, state: FSMContext):
     user = session.query(User).get(message.from_user.id)
     latitude = message.location.latitude
     longitude = message.location.longitude
@@ -115,14 +131,23 @@ async def input_user_coordinates_location(message: types.Message):
     user.address = city
     user.lat_itude = latitude
     user.long_itude = longitude
-    user.status = 'active'
     session.commit()
     general_menu_kb = build_general_menu_keyboard(user.language)
-    await bot.send_message(
-        message.chat.id,
-        main_description_text[user.language],
-        reply_markup=general_menu_kb
-        )
+    await state.finish()
+    if user.status == 'not_verified':
+        user.status = 'active'
+        session.commit()
+        await bot.send_message(
+            message.chat.id,
+            main_description_text[user.language],
+            reply_markup=general_menu_kb
+            )
+    else:
+        await bot.send_message(
+            message.chat.id,
+            successful_city_change_text[user.language].format(city),
+            reply_markup=general_menu_kb
+            )
 
 
 
