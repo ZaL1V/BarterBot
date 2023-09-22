@@ -10,7 +10,7 @@ from text import (
     input_user_city_type_error_text, main_description_text, successful_language_change_text,
     successful_city_change_text
     )
-from .state_groups import MainState
+from .state_groups import RegistrationState
 from database import (
     session, User
     )
@@ -71,7 +71,7 @@ async def choose_a_language(query: types.CallbackQuery):
             input_location_text[user.language],
             reply_markup=get_location_kb
         )
-        await MainState.get_location.set()
+        await RegistrationState.get_location.set()
     else:
         general_menu_kb = build_general_menu_keyboard(user.language)
         await bot.send_message(
@@ -162,11 +162,11 @@ def registr_handlers_user_registration(dp: Dispatcher):
     )
     dp.register_message_handler(
         input_user_city_location,
-        state=MainState.get_location
+        state=RegistrationState.get_location
         )
     dp.register_message_handler(
         input_user_coordinates_location,
         content_types=['location'],
-        state=MainState.get_location
+        state=RegistrationState.get_location
         )
     

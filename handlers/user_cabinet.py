@@ -8,7 +8,7 @@ from text import (
     change_city_user_cabinet_text, help_user_cabinet_text
     
     )
-from .state_groups import MainState
+from .state_groups import RegistrationState
 from database import (
     session, User
     )
@@ -109,7 +109,7 @@ async def change_city_user_cabinet(query: types.CallbackQuery):
         query.message.message_id,
         reply_markup=None
     )
-    await MainState.get_location.set()
+    await RegistrationState.get_location.set()
 
 #? --- HELP --- ?#
 

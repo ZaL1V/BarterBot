@@ -53,7 +53,7 @@ class Tag(Base):
         ):
         self.status = status
         self.name_en = name_en
-        self.name_ua = name_uk
+        self.name_uk = name_uk
         self.name_pl = name_pl
         self.name_ru = name_ru
         super().__init__()
