@@ -18,3 +18,11 @@ from .user_cabinet_btn_text import (
     my_exchanges_btn_text, change_language_btn_text, change_city_btn_text,
     help_btn_text
 )
+
+from .user_adding_item_text import (
+    added_item_name_text, cancel_added_item_text, item_name_len_error_text
+)
+
+from .user_adding_item_btn_text import (
+    cancel_btn_text
+)

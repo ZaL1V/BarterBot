@@ -1,5 +1,5 @@
 from aiogram.types import (
-    KeyboardButton, ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton, WebAppData
+    InlineKeyboardMarkup, InlineKeyboardButton
 )
 from text import(
     user_favorites_btn_text, my_items_btn_text, incoming_applications_btn_text,

@@ -52,7 +52,7 @@ successful_language_change_text = {
     'uk': '🌐 Мова успішно змінена на українську! 🔄',
     'en': '🌐 Language successfully changed to English! 🔄',
     'pl': '🌐 Język został pomyślnie zmieniony na polski! 🔄',
-    'ru': '🌐 Язык изменён на Кацапский 💩'
+    'ru': '💩 Язык изменён на Кацапський 🔄'
 }
 
 successful_city_change_text = {

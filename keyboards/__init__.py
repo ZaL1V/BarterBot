@@ -7,3 +7,7 @@ from .user_registration_kb import (
 from .user_cabinet_kb import (
     build_user_cabinet_menu_keyboard
 )
+
+from .user_adding_item_kb import (
+    build_cancel_added_item_keyboard
+)
