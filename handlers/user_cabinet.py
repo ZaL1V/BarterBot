@@ -5,7 +5,8 @@ from aiogram.dispatcher.filters import Text
 from create_bot import dp, bot
 from text import (
     user_cabinet_menu_text, user_language_text, choose_a_language_text,
-    change_city_user_cabinet_text, help_user_cabinet_text
+    change_city_user_cabinet_text, help_user_cabinet_text,
+    cancel_change_city_text
     )
 from .state_groups import RegistrationState
 from database import (
@@ -111,6 +112,21 @@ async def change_city_user_cabinet(query: types.CallbackQuery):
     )
     await RegistrationState.get_location.set()
 
+
+# async def cancel_change_city(query: types.CallbackQuery, state: FSMContext):
+#     user = session.query(User).get(query.from_user.id)
+#     await state.finish()
+#     await bot.send_message(
+#         query.message.chat.id,
+#         cancel_change_city_text[user.language].format(user.address)
+#     )
+#     await bot.edit_message_reply_markup(
+#         query.message.chat.id,
+#         query.message.message_id,
+#         reply_markup=None
+#     )
+
+
 #? --- HELP --- ?#
 
 async def help_user_cabinet(query: types.CallbackQuery):
@@ -169,6 +185,10 @@ def registr_handlers_user_cabinet(dp: Dispatcher):
         change_city_user_cabinet,
         Text(startswith='change_city_user_cabinet')
     )
+    # dp.register_callback_query_handler(
+    #     cancel_change_city,
+    #     Text(startswith='cancel_change_city')
+    # )
     #* --- HELP --- *#
     dp.register_callback_query_handler(
         help_user_cabinet,

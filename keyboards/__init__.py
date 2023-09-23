@@ -9,5 +9,6 @@ from .user_cabinet_kb import (
 )
 
 from .user_adding_item_kb import (
-    build_cancel_added_item_keyboard
+    build_cancel_added_item_keyboard,
+    build_back_to_input_item_name_keyboard
 )

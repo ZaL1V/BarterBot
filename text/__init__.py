@@ -10,7 +10,8 @@ from .user_registration_btn_text import (
 
 from .user_cabinet_text import (
     user_cabinet_menu_text, user_language_text, successful_language_change_text,
-    successful_city_change_text, change_city_user_cabinet_text, help_user_cabinet_text
+    successful_city_change_text, change_city_user_cabinet_text, help_user_cabinet_text,
+    cancel_change_city_text
 )
 
 from .user_cabinet_btn_text import (
@@ -20,9 +21,10 @@ from .user_cabinet_btn_text import (
 )
 
 from .user_adding_item_text import (
-    added_item_name_text, cancel_added_item_text, item_name_len_error_text
+    added_item_name_text, cancel_added_item_text, item_name_len_error_text,
+    added_item_media_text, added_item_description_text, item_description_len_error_text
 )
 
 from .user_adding_item_btn_text import (
-    cancel_btn_text
+    cancel_btn_text, back_btn_text
 )
