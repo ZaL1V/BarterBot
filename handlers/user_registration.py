@@ -10,6 +10,7 @@ from text import (
     input_user_city_type_error_text, main_description_text, successful_language_change_text,
     successful_city_change_text
     )
+from user_valodation import get_verified_user
 from .state_groups import RegistrationState
 from database import (
     session, User
@@ -54,7 +55,7 @@ async def command_start(message: types.Message):
 
 
 async def choose_a_language(query: types.CallbackQuery):
-    user = session.query(User).get(query.from_user.id)
+    user = await get_verified_user(query.from_user.id)
     language_key = query.data.split('#')[1]
     user.language = language_key
     session.commit()
@@ -82,7 +83,7 @@ async def choose_a_language(query: types.CallbackQuery):
 
 
 async def input_user_city_location(message: types.Message, state: FSMContext):
-    user = session.query(User).get(message.from_user.id)
+    user = await get_verified_user(message.from_user.id)
     city = str(message.text)
     get_location_kb = build_get_location_keyboard(user.language)
     general_menu_kb = build_general_menu_keyboard(user.language)
@@ -124,7 +125,7 @@ async def input_user_city_location(message: types.Message, state: FSMContext):
 
 
 async def input_user_coordinates_location(message: types.Message, state: FSMContext):
-    user = session.query(User).get(message.from_user.id)
+    user = await get_verified_user(message.from_user.id)
     latitude = message.location.latitude
     longitude = message.location.longitude
     city = get_location_by_coordinates(latitude, longitude, user.language)

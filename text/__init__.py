@@ -26,5 +26,5 @@ from .user_adding_item_text import (
 )
 
 from .user_adding_item_btn_text import (
-    cancel_btn_text, back_btn_text
+    cancel_addition_btn_text, back_to_input_item_name_btn_text, skip_item_description_btn_text
 )

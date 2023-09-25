@@ -8,6 +8,7 @@ from text import (
     change_city_user_cabinet_text, help_user_cabinet_text,
     cancel_change_city_text
     )
+from user_valodation import get_verified_user
 from .state_groups import RegistrationState
 from database import (
     session, User
@@ -22,7 +23,7 @@ from keyboards import (
 #? --- Cabinet Menu --- ?#
 
 async def user_cabinet_menu(message: types.Message):
-    user = session.query(User).get(message.from_user.id)
+    user = await get_verified_user(message.from_user.id)
     user_cabinet_menu_kb = build_user_cabinet_menu_keyboard(user.language)
     telegram_id = f'<code>{user.telegram_id}</code>'
     address = user.address
@@ -47,7 +48,7 @@ async def user_cabinet_menu(message: types.Message):
 #? --- Favorites --- ?#
 
 async def favorites_user_cabinet(query: types.CallbackQuery):
-    user = session.query(User).get(query.from_user.id)
+    user = await get_verified_user(query.from_user.id)
     await bot.send_message(
         query.message.chat.id,
         '🛠У РОЗРОБЦІ⚙️'
@@ -56,7 +57,7 @@ async def favorites_user_cabinet(query: types.CallbackQuery):
 #? ---  My Items --- ?#
 
 async def my_items_user_cabinet(query: types.CallbackQuery):
-    user = session.query(User).get(query.from_user.id)
+    user = await get_verified_user(query.from_user.id)
     await bot.send_message(
         query.message.chat.id,
         '🛠У РОЗРОБЦІ⚙️'
@@ -65,7 +66,7 @@ async def my_items_user_cabinet(query: types.CallbackQuery):
 #? ---  Incoming Requests --- ?#
 
 async def incoming_requests_user_cabinet(query: types.CallbackQuery):
-    user = session.query(User).get(query.from_user.id)
+    user = await get_verified_user(query.from_user.id)
     await bot.send_message(
         query.message.chat.id,
         '🛠У РОЗРОБЦІ⚙️'
@@ -74,7 +75,7 @@ async def incoming_requests_user_cabinet(query: types.CallbackQuery):
 #? ---  My Exchanges --- ?#
 
 async def my_exchanges_user_cabinet(query: types.CallbackQuery):
-    user = session.query(User).get(query.from_user.id)
+    user = await get_verified_user(query.from_user.id)
     await bot.send_message(
         query.message.chat.id,
         '🛠У РОЗРОБЦІ⚙️'
@@ -98,7 +99,7 @@ async def change_language_user_cabinet(query: types.CallbackQuery):
 #? --- Change City --- ?#
 
 async def change_city_user_cabinet(query: types.CallbackQuery):
-    user = session.query(User).get(query.from_user.id)
+    user = await get_verified_user(query.from_user.id)
     get_location_kb = build_get_location_keyboard(user.language)
     await bot.send_message(
         query.message.chat.id,
@@ -114,7 +115,7 @@ async def change_city_user_cabinet(query: types.CallbackQuery):
 
 
 # async def cancel_change_city(query: types.CallbackQuery, state: FSMContext):
-#     user = session.query(User).get(query.from_user.id)
+#     user = await get_verified_user(query.from_user.id)
 #     await state.finish()
 #     await bot.send_message(
 #         query.message.chat.id,
@@ -130,7 +131,7 @@ async def change_city_user_cabinet(query: types.CallbackQuery):
 #? --- HELP --- ?#
 
 async def help_user_cabinet(query: types.CallbackQuery):
-    user = session.query(User).get(query.from_user.id)
+    user = await get_verified_user(query.from_user.id)
     help_url = '@ZalevSkyiM'
     await bot.send_message(
         query.message.chat.id,
