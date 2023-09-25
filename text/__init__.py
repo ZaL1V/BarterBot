@@ -1,3 +1,7 @@
+from .user_universal_text import (
+    input_required_msg_text
+)
+
 from .user_registration_text import (
     choose_a_language_text, input_location_text, input_user_city_name_error_text,
     input_user_city_type_error_text, main_description_text

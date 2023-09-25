@@ -8,8 +8,9 @@ from create_bot import dp, bot
 from text import (
     choose_a_language_text, input_location_text, input_user_city_name_error_text,
     input_user_city_type_error_text, main_description_text, successful_language_change_text,
-    successful_city_change_text
+    successful_city_change_text, input_required_msg_text
     )
+from ignore_values import should_ignore
 from user_valodation import get_verified_user
 from .state_groups import RegistrationState
 from database import (
@@ -85,43 +86,49 @@ async def choose_a_language(query: types.CallbackQuery):
 async def input_user_city_location(message: types.Message, state: FSMContext):
     user = await get_verified_user(message.from_user.id)
     city = str(message.text)
-    get_location_kb = build_get_location_keyboard(user.language)
-    general_menu_kb = build_general_menu_keyboard(user.language)
-    if city.replace(" ", "").isalpha():
-        latitude, longitude = get_location_by_city(city)
-        
-        if latitude and longitude:
-            user.address = city
-            user.lat_itude = latitude
-            user.long_itude = longitude
-            session.commit()
-            await state.finish()
-            if user.status == 'not_verified':
-                user.status = 'active'
+    if should_ignore(city, user.language):
+        await bot.send_message(
+            message.chat.id,
+            input_required_msg_text[user.language]
+        )
+    else:
+        get_location_kb = build_get_location_keyboard(user.language)
+        general_menu_kb = build_general_menu_keyboard(user.language)
+        if city.replace(" ", "").isalpha():
+            latitude, longitude = get_location_by_city(city)
+            
+            if latitude and longitude:
+                user.address = city
+                user.lat_itude = latitude
+                user.long_itude = longitude
                 session.commit()
-                await bot.send_message(
-                    message.chat.id,
-                    main_description_text[user.language],
-                    reply_markup=general_menu_kb
-                    )
+                await state.finish()
+                if user.status == 'not_verified':
+                    user.status = 'active'
+                    session.commit()
+                    await bot.send_message(
+                        message.chat.id,
+                        main_description_text[user.language],
+                        reply_markup=general_menu_kb
+                        )
+                else:
+                    await bot.send_message(
+                        message.chat.id,
+                        successful_city_change_text[user.language].format(city),
+                        reply_markup=general_menu_kb
+                        )
             else:
                 await bot.send_message(
                     message.chat.id,
-                    successful_city_change_text[user.language].format(city),
-                    reply_markup=general_menu_kb
-                    )
+                    input_user_city_name_error_text[user.language],
+                    reply_markup=get_location_kb
+                )
         else:
             await bot.send_message(
                 message.chat.id,
-                input_user_city_name_error_text[user.language],
+                successful_language_change_text[user.language],
                 reply_markup=get_location_kb
             )
-    else:
-        await bot.send_message(
-            message.chat.id,
-            successful_language_change_text[user.language],
-            reply_markup=get_location_kb
-        )
 
 
 async def input_user_coordinates_location(message: types.Message, state: FSMContext):

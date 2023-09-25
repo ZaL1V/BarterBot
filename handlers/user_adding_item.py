@@ -5,8 +5,10 @@ from aiogram.dispatcher.filters import Text
 from create_bot import dp, bot
 from text import (
     added_item_name_text, cancel_added_item_text, item_name_len_error_text,
-    added_item_media_text, added_item_description_text, item_description_len_error_text
+    added_item_media_text, added_item_description_text, item_description_len_error_text,
+    input_required_msg_text
     )
+from ignore_values import should_ignore
 from user_valodation import get_verified_user
 from .state_groups import AddedItem
 from database import (
@@ -56,29 +58,35 @@ async def input_item_name(message: types.Message, state: FSMContext):
     message_id = user_data.get('message_id')
     back_to_input_item_name_kb = build_back_to_input_item_name_keyboard(user.language)
     item_name = str(message.text)
-    if len(item_name) > 24:
+    if should_ignore(item_name, user.language):
         await bot.send_message(
             message.chat.id,
-            item_name_len_error_text[user.language]
+            input_required_msg_text[user.language]
         )
-    else: 
-        user_data['item_name'] = item_name
-        user.data = json.dumps(user_data)
-        session.commit()
-        send_message = await bot.send_message(
-            message.chat.id,
-            added_item_description_text[user.language],
-            reply_markup=back_to_input_item_name_kb
-        )
-        user_data['message_id'] = send_message.message_id
-        user.data = json.dumps(user_data)
-        session.commit()
-        await  bot.edit_message_reply_markup(
-            message.chat.id,
-            message_id,
-            reply_markup=None
-        )
-        await AddedItem.item_description.set()
+    else:
+        if len(item_name) > 24:
+            await bot.send_message(
+                message.chat.id,
+                item_name_len_error_text[user.language]
+            )
+        else: 
+            user_data['item_name'] = item_name
+            user.data = json.dumps(user_data)
+            session.commit()
+            send_message = await bot.send_message(
+                message.chat.id,
+                added_item_description_text[user.language],
+                reply_markup=back_to_input_item_name_kb
+            )
+            user_data['message_id'] = send_message.message_id
+            user.data = json.dumps(user_data)
+            session.commit()
+            await  bot.edit_message_reply_markup(
+                message.chat.id,
+                message_id,
+                reply_markup=None
+            )
+            await AddedItem.item_description.set()
 
 
 #? --- Item Description --- ?#
@@ -88,25 +96,31 @@ async def input_item_description(message: types.Message):
     user_data = json.loads(user.data) if user.data else {}
     message_id = user_data.get('message_id')
     item_description = str(message.text)
-    if len(item_description) > 200:
+    if should_ignore(item_description, user.language):
         await bot.send_message(
             message.chat.id,
-            item_description_len_error_text[user.language]
+            input_required_msg_text[user.language]
         )
     else:
-        user_data['item_description'] = item_description
-        user.data = json.dumps(user_data)
-        session.commit()
-        await bot.send_message(
-            message.chat.id,
-            added_item_media_text[user.language]
-        )
-        await  bot.edit_message_reply_markup(
-            message.chat.id,
-            message_id,
-            reply_markup=None
-        )
-        await AddedItem.item_media.set()
+        if len(item_description) > 200:
+            await bot.send_message(
+                message.chat.id,
+                item_description_len_error_text[user.language]
+            )
+        else:
+            user_data['item_description'] = item_description
+            user.data = json.dumps(user_data)
+            session.commit()
+            await bot.send_message(
+                message.chat.id,
+                added_item_media_text[user.language]
+            )
+            await  bot.edit_message_reply_markup(
+                message.chat.id,
+                message_id,
+                reply_markup=None
+            )
+            await AddedItem.item_media.set()
 
 
 async def back_to_input_item_name(query: types.CallbackQuery):
