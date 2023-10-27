@@ -1,12 +1,16 @@
-import json
+import json, asyncio
 from aiogram import types, Dispatcher
+from aiogram.types import ContentType
+from aiogram.dispatcher.filters import BoundFilter
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from create_bot import dp, bot
 from text import (
     added_item_name_text, cancel_added_item_text, item_name_len_error_text,
     added_item_media_text, added_item_description_text, item_description_len_error_text,
-    input_required_msg_text
+    input_required_msg_text, input_required_media_text, max_media_sent_text,
+    invalid_media_type_text, media_count_msg_text, input_media_video_duration_error_text,
+    quantity_item_media_text, media_is_not_loaded_text, clear_media_text
     )
 from ignore_values import should_ignore
 from user_valodation import get_verified_user
@@ -16,8 +20,10 @@ from database import (
     )
 from keyboards import (
     build_cancel_added_item_keyboard,
-    build_back_to_input_item_name_keyboard
+    build_back_to_input_item_name_keyboard,
+    build_input_item_media_keyboard
 )
+
 
 
 #? --- Item Name --- ?#
@@ -63,6 +69,10 @@ async def input_item_name(message: types.Message, state: FSMContext):
             message.chat.id,
             input_required_msg_text[user.language]
         )
+        await bot.delete_message(
+            chat_id=message.chat.id,
+            message_id=message.message_id
+        )
     else:
         if len(item_name) > 24:
             await bot.send_message(
@@ -93,6 +103,7 @@ async def input_item_name(message: types.Message, state: FSMContext):
 
 async def input_item_description(message: types.Message):
     user = await get_verified_user(message.from_user.id)
+    input_item_media_kb = build_input_item_media_keyboard(user.language)
     user_data = json.loads(user.data) if user.data else {}
     message_id = user_data.get('message_id')
     item_description = str(message.text)
@@ -100,6 +111,10 @@ async def input_item_description(message: types.Message):
         await bot.send_message(
             message.chat.id,
             input_required_msg_text[user.language]
+        )
+        await bot.delete_message(
+            chat_id=message.chat.id,
+            message_id=message.message_id
         )
     else:
         if len(item_description) > 200:
@@ -113,7 +128,8 @@ async def input_item_description(message: types.Message):
             session.commit()
             await bot.send_message(
                 message.chat.id,
-                added_item_media_text[user.language]
+                added_item_media_text[user.language],
+                reply_markup=input_item_media_kb
             )
             await  bot.edit_message_reply_markup(
                 message.chat.id,
@@ -146,6 +162,7 @@ async def back_to_input_item_name(query: types.CallbackQuery):
 
 async def skip_item_description(query: types.CallbackQuery):
     user = await get_verified_user(query.from_user.id)
+    input_item_media_kb = build_input_item_media_keyboard(user.language)
     user_data = json.loads(user.data) if user.data else {}
     message_id = user_data.get('message_id')
     user_data['item_description'] = None
@@ -153,7 +170,8 @@ async def skip_item_description(query: types.CallbackQuery):
     session.commit()
     await bot.send_message(
         query.message.chat.id,
-        added_item_media_text[user.language]
+        added_item_media_text[user.language],
+        reply_markup=input_item_media_kb
     )
     await  bot.edit_message_reply_markup(
         query.message.chat.id,
@@ -164,10 +182,138 @@ async def skip_item_description(query: types.CallbackQuery):
 
 #? --- Item Photo --- ?#
 
-async def input_item_media():
-    pass
+async def input_item_media(message: types.Message, state: FSMContext):
+    user = await get_verified_user(message.from_user.id)
+    input_item_media_kb = build_input_item_media_keyboard(user.language)
+    async with state.proxy() as data:
+        if 'media' not in data:
+            data['media'] = {"photos": [], "videos": []}
+    
+        total_media = len(data['media']['photos']) + len(data['media']['videos'])
+        if total_media >= 3:
+            await bot.send_message(
+                message.chat.id,
+                max_media_sent_text[user.language],
+                reply_markup=input_item_media_kb
+                )
+            await bot.delete_message(
+                chat_id=message.chat.id,
+                message_id=message.message_id
+            )
+            return
+        if message.photo:
+            data['media']['photos'].append(message.photo[-1].file_id)
+        elif message.video:
+            video = message.video
+            if video.duration > 15:
+                await bot.send_message(
+                    message.chat.id,
+                    input_media_video_duration_error_text[user.language],
+                    reply_markup=input_item_media_kb
+                    )
+                return
+            else:
+                data['media']['videos'].append(message.video.file_id)
+        await state.update_data(data)
+        total_media = len(data['media']['photos']) + len(data['media']['videos'])
+        await bot.send_message(
+            message.chat.id,
+            media_count_msg_text[user.language].format(total_media),
+            reply_markup=input_item_media_kb
+            )
+
+
+async def back_to_description(message: types.Message):
+    user = await get_verified_user(message.from_user.id)
+    user_data = json.loads(user.data) if user.data else {}
+    back_to_input_item_name_kb = build_back_to_input_item_name_keyboard(user.language)
+    send_message = await bot.send_message(
+        message.chat.id,
+        added_item_description_text[user.language],
+        reply_markup=back_to_input_item_name_kb
+    )
+    user_data['message_id'] = send_message.message_id
+    user.data = json.dumps(user_data)
+    session.commit()
+    await AddedItem.item_description.set()
+
+
+async def clear_media(message: types.Message, state: FSMContext):
+    user = await get_verified_user(message.from_user.id)
+    input_item_media_kb = build_input_item_media_keyboard(user.language)
+    async with state.proxy() as data:
+        data['media'] = {"photos": [], "videos": []}
+    await bot.send_message(
+        message.chat.id,
+        clear_media_text[user.language],
+        reply_markup=input_item_media_kb
+    )
+
+
+async def save_item_media(message: types.Message, state: FSMContext):
+    user = await get_verified_user(message.from_user.id)
+    user_data = json.loads(user.data) if user.data else {}
+    async with state.proxy() as data:
+        media = data.get('media', None)
+        if media is not None:
+            total_media = len(data['media']['photos']) + len(data['media']['videos'])
+            if total_media < 1:
+                await bot.send_message(
+                message.from_user.id,
+                media_is_not_loaded_text[user.language]
+            )
+            else:
+                item_name = user_data.get('item_name')
+                item_description = user_data.get('item_description')
+                item = Item(
+                    user=user.telegram_id,
+                    name=item_name,
+                    media=media,
+                    description=item_description,
+                    status='active'
+                )
+                session.add(item)
+                session.commit()
+                await state.finish()
+                await bot.send_message(
+                    message.from_user.id,
+                    quantity_item_media_text[user.language].format(total_media)
+                )
+                #! NEXT FUNCTION !#    
+        else:
+            await bot.send_message(
+                message.from_user.id,
+                media_is_not_loaded_text[user.language]
+            )
+
+
+async def text_validation_when_entering_media(message:types.Message):
+    user = await get_verified_user(message.from_user.id)
+    input_item_media_kb = build_input_item_media_keyboard(user.language)
+    if should_ignore(message.text, user.language):
+        await bot.send_message(
+            message.chat.id,
+            input_required_msg_text[user.language]
+        )
+        await bot.delete_message(
+            chat_id=message.chat.id,
+            message_id=message.message_id
+        )
+    else:
+        await bot.send_message(
+            message.chat.id,
+            invalid_media_type_text[user.language],
+            reply_markup=input_item_media_kb
+        )
+        await bot.delete_message(
+            chat_id=message.chat.id,
+            message_id=message.message_id
+        )
+
 
 #? --- Item Tags --- ?#
+
+
 
 
 
@@ -213,7 +359,42 @@ def registr_handlers_user_adding_item(dp: Dispatcher):
     #* --- Item Photo --- *#
     dp.register_message_handler(
         input_item_media,
-        state=AddedItem.item_media
+        state=AddedItem.item_media,
+        content_types=[ContentType.PHOTO, ContentType.VIDEO]
     )
-
+    dp.register_message_handler(
+        back_to_description,
+        Text(equals=[
+            '⬅️ Назад до опису',
+            '⬅️ Back to description',
+            '⬅️ Wróć do opisu',
+            '⬅️ Назад к описанию'
+            ]),
+        state=AddedItem.item_media,
+    )
+    dp.register_message_handler(
+        clear_media,
+        Text(equals=[
+            '🔄 Ввести медіа знову',
+            '🔄 Enter media again',
+            '🔄 Wprowadź media ponownie',
+            '🔄 Ввести медиа заново'
+            ]),
+        state=AddedItem.item_media,
+    )
+    dp.register_message_handler(
+        save_item_media,
+        Text(equals=[
+            '💾 Зберегти медіа',
+            '💾 Save media',
+            '💾 Zapisz media',
+            '💾 Сохранить медиа'
+            ]),
+        state=AddedItem.item_media,
+    )
+    dp.register_message_handler(
+        text_validation_when_entering_media,
+        lambda message: message.content_type not in ['photo', 'video'], 
+        state=AddedItem.item_media,
+    )
     #* --- Item Tags --- *#

@@ -18,3 +18,24 @@ skip_item_description_btn_text = {
     'pl': '🔽Pomiń opis 📝',
     'ru': '🔽Пропустить описание 📝'
 }
+
+save_media_btn_text = {
+    'uk': '💾 Зберегти медіа',
+    'en': '💾 Save media',
+    'pl': '💾 Zapisz media',
+    'ru': '💾 Сохранить медиа'
+}
+
+reset_media_btn_text = {
+    'uk': '🔄 Ввести медіа знову',
+    'en': '🔄 Enter media again',
+    'pl': '🔄 Wprowadź media ponownie',
+    'ru': '🔄 Ввести медиа заново'
+}
+
+back_to_description_btn_text = {
+    'uk': '⬅️ Назад до опису',
+    'en': '⬅️ Back to description',
+    'pl': '⬅️ Wróć do opisu',
+    'ru': '⬅️ Назад к описанию'
+}

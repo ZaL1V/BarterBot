@@ -50,16 +50,16 @@ item_name_len_error_text = {
 
 added_item_media_text = {
     'uk': '''
-📸 Будь ласка, додайте фотографію або коротке відео вашого предмета. Це допоможе іншим користувачам краще оцінити вашу пропозицію! 🎥
+📸 Будь ласка, додайте фотографію або коротке відео вашого предмета (не більше 3 медіафайлів). Це допоможе іншим користувачам краще оцінити вашу пропозицію! 🎥
     ''',
-    'en': """
-📸 Please add a photo or a short video of your item. This helps other users better assess your offer! 🎥
+'en': """
+📸 Please add a photo or a short video of your item (up to 3 media files). This helps other users better assess your offer! 🎥
     """,
-    'pl': '''
-📸 Proszę dodać zdjęcie lub krótki filmik przedmiotu. Pomaga to innym użytkownikom lepiej ocenić twoją ofertę! 🎥
+'pl': '''
+📸 Proszę dodać zdjęcie lub krótki filmik przedmiotu (maksymalnie 3 pliki multimedialne). Pomaga to innym użytkownikom lepiej ocenić twoją ofertę! 🎥
     ''',
-    'ru': '''
-📸 Пожалуйста, добавьте фотографию или короткое видео вашего предмета. Это поможет другим пользователям лучше оценить ваше предложение! 🎥
+'ru': '''
+📸 Пожалуйста, добавьте фотографию или короткое видео вашего предмета (не более 3 медиафайлов). Это поможет другим пользователям лучше оценить ваше предложение! 🎥
     '''
 }
 
@@ -91,4 +91,61 @@ item_description_len_error_text = {
     'ru': '''
 🚫 Ваше описание слишком длинное! Убедитесь, что оно не превышает 200 символов, включая пробелы. Укоротите и попробуйте снова. 📝
     '''
+}
+
+max_media_sent_text = {
+    'uk': '🎈 Упс! Занадто багато медіа! Зупинімося на трьох. 📸🎥',
+    'en': "🎈 Oops! Too much media! Let's stick to three. 📸🎥",
+    'pl': '🎈 Ups! Za dużo multimediów! Zatrzymajmy się na trzech. 📸🎥',
+    'ru': '🎈 Упс! Слишком много медиа! Остановимся на трех. 📸🎥'
+}
+
+invalid_media_type_text = {
+    'uk': '''
+🙈 Упс! Це ж не фото чи відео! Може, знову спробуємо? 📸🎥
+    ''',
+    'en': """
+🙈 Oops! That's not a photo or video! Shall we try again? 📸🎥
+    """,
+    'pl': '''
+🙈 Ups! To przecież nie zdjęcie ani film! Może spróbujmy ponownie? 📸🎥
+    ''',
+    'ru': '''
+🙈 Ой! Это же не фото или видео! Попробуем еще раз? 📸🎥
+    '''
+}
+
+media_count_msg_text = {
+    'uk': '🎈 Додано {} з 3 медіафайлів.',
+    'en': '🎈 Added {} out of 3 media files.',
+    'pl': '🎈 Dodano {} z 3 plików multimedialnych.',
+    'ru': '🎈 Добавлено {} из 3 медиафайлов.'
+}
+
+input_media_video_duration_error_text = {
+    'uk': "🎥 Ваше відео занадто довге! 😅 Будь ласка, відправте відео, що триває не більше 15 секунд. ⏳",
+    'en': "🎥 Your video is too long! 😅 Please send a video that's no longer than 15 seconds. ⏳",
+    'pl': "🎥 Twoje wideo jest zbyt długie! 😅 Proszę wysłać film, który trwa nie dłużej niż 15 sekund. ⏳",
+    'ru': "🎥 Ваше видео слишком длинное! 😅 Пожалуйста, отправьте видео, продолжительностью не более 15 секунд. ⏳"
+}
+
+quantity_item_media_text = {
+    'uk': '🎉 Завантажено {} медіафайлів! 📸',
+    'en': '🎉 Loaded {} media files! 📸',
+    'pl': '🎉 Załadowano {} plików multimedialnych! 📸',
+    'ru': '🎉 Загружено {} медиафайлов! 📸'
+}
+
+media_is_not_loaded_text = {
+    'uk': '🤔 Ви ще не завантажили жодного медіафайлу. 🚫📸',
+    'en': '🤔 You haven\'t loaded any media files yet. 🚫📸',
+    'pl': '🤔 Jeszcze nie załadowałeś żadnych plików multimedialnych. 🚫📸',
+    'ru': '🤔 Вы еще не загрузили ни одного медиафайла. 🚫📸'
+}
+
+clear_media_text = {
+    'uk': '🔄 Медіафайли успішно очищені! Тепер ви можете завантажити їх знову. 📸🎥',
+    'en': '🔄 Media files have been cleared! You can now upload them again. 📸🎥',
+    'pl': '🔄 Pliki multimedialne zostały wyczyszczone! Możesz teraz przesłać je ponownie. 📸🎥',
+    'ru': '🔄 Медиафайлы успешно очищены! Теперь вы можете загрузить их снова. 📸🎥'
 }

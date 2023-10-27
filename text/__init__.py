@@ -1,7 +1,9 @@
+#=== UNIVERSAL ===#
 from .user_universal_text import (
-    input_required_msg_text
+    input_required_msg_text, input_required_media_text
 )
 
+#=== REGISTRATION ===#
 from .user_registration_text import (
     choose_a_language_text, input_location_text, input_user_city_name_error_text,
     input_user_city_type_error_text, main_description_text
@@ -12,6 +14,7 @@ from .user_registration_btn_text import (
     user_profile_btn_text, add_item_btn_text
 )
 
+#=== CABINET ===#
 from .user_cabinet_text import (
     user_cabinet_menu_text, user_language_text, successful_language_change_text,
     successful_city_change_text, change_city_user_cabinet_text, help_user_cabinet_text,
@@ -24,11 +27,16 @@ from .user_cabinet_btn_text import (
     help_btn_text
 )
 
+#=== ADDING ITEM ===#
 from .user_adding_item_text import (
     added_item_name_text, cancel_added_item_text, item_name_len_error_text,
-    added_item_media_text, added_item_description_text, item_description_len_error_text
+    added_item_media_text, added_item_description_text, item_description_len_error_text,
+    max_media_sent_text, invalid_media_type_text, media_count_msg_text,
+    input_media_video_duration_error_text, quantity_item_media_text, media_is_not_loaded_text,
+    clear_media_text
 )
 
 from .user_adding_item_btn_text import (
-    cancel_addition_btn_text, back_to_input_item_name_btn_text, skip_item_description_btn_text
+    cancel_addition_btn_text, back_to_input_item_name_btn_text, skip_item_description_btn_text,
+    save_media_btn_text, back_to_description_btn_text, reset_media_btn_text
 )

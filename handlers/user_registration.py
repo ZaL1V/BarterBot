@@ -53,6 +53,13 @@ async def command_start(message: types.Message):
         session.add(user)
         session.commit()
         print('Created User:', user.telegram_id)
+    else:
+        general_menu_kb = build_general_menu_keyboard(user.language)
+        await bot.send_message(
+            message.chat.id,
+            'fff',
+            reply_markup=general_menu_kb
+            ) 
 
 
 async def choose_a_language(query: types.CallbackQuery):
@@ -86,10 +93,15 @@ async def choose_a_language(query: types.CallbackQuery):
 async def input_user_city_location(message: types.Message, state: FSMContext):
     user = await get_verified_user(message.from_user.id)
     city = str(message.text)
+    not_verified_city = f'{city} 🖌'
     if should_ignore(city, user.language):
         await bot.send_message(
             message.chat.id,
             input_required_msg_text[user.language]
+        )
+        await bot.delete_message(
+            chat_id=message.chat.id,
+            message_id=message.message_id
         )
     else:
         get_location_kb = build_get_location_keyboard(user.language)
@@ -98,7 +110,7 @@ async def input_user_city_location(message: types.Message, state: FSMContext):
             latitude, longitude = get_location_by_city(city)
             
             if latitude and longitude:
-                user.address = city
+                user.address = not_verified_city
                 user.lat_itude = latitude
                 user.long_itude = longitude
                 session.commit()
@@ -136,7 +148,8 @@ async def input_user_coordinates_location(message: types.Message, state: FSMCont
     latitude = message.location.latitude
     longitude = message.location.longitude
     city = get_location_by_coordinates(latitude, longitude, user.language)
-    user.address = city
+    verified_city = f'{city} 📍'
+    user.address = verified_city
     user.lat_itude = latitude
     user.long_itude = longitude
     session.commit()
