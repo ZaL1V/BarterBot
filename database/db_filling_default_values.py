@@ -12,7 +12,7 @@ def load_default_tags():
         
         if not existing_tag:
             tag = Tag(
-                status="active",
+                status=tag_data["status"],
                 name_en=tag_data["name_en"],
                 name_uk=tag_data["name_uk"],
                 name_pl=tag_data["name_pl"],

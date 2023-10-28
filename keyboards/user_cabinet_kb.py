@@ -37,9 +37,13 @@ def build_user_cabinet_menu_keyboard(language):
         text=help_btn_text[language],
         callback_data='help_user_cabinet'
         )
-    kb_choose_a_language = InlineKeyboardMarkup(resize_keyboard=True, row_width=1)
+    kb_choose_a_language = InlineKeyboardMarkup(resize_keyboard=True, row_width=2)
     kb_choose_a_language.add(
-        favorites_btn, items_btn, incoming_applications_btn, exchangess_btn,
-        change_language_btn, change_city_btn, help_btn
-        )
+        favorites_btn
+            ).add(items_btn
+                ).add(incoming_applications_btn
+                    ).add(exchangess_btn
+                        ).add(change_language_btn, change_city_btn
+                            ).add(help_btn)
+
     return kb_choose_a_language

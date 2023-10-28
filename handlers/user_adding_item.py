@@ -2,6 +2,7 @@ import json, asyncio
 from aiogram import types, Dispatcher
 from aiogram.types import ContentType
 from aiogram.dispatcher.filters import BoundFilter
+from aiogram.types import InputMediaPhoto, InputMediaVideo
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
 from create_bot import dp, bot
@@ -10,15 +11,18 @@ from text import (
     added_item_media_text, added_item_description_text, item_description_len_error_text,
     input_required_msg_text, input_required_media_text, max_media_sent_text,
     invalid_media_type_text, media_count_msg_text, input_media_video_duration_error_text,
-    quantity_item_media_text, media_is_not_loaded_text, clear_media_text
+    quantity_item_media_text, media_is_not_loaded_text, clear_media_text,
+    item_form_post_with_description, item_form_post_no_description, standart_decorational_line_text,
     )
 from ignore_values import should_ignore
 from user_valodation import get_verified_user
 from .state_groups import AddedItem
+from basic_tools import get_column_by_language
 from database import (
-    session, User, Item
+    session, User, Item, Tag
     )
 from keyboards import (
+    build_general_menu_keyboard,
     build_cancel_added_item_keyboard,
     build_back_to_input_item_name_keyboard,
     build_input_item_media_keyboard
@@ -46,10 +50,12 @@ async def added_item_name(message: types.Message):
 
 async def cancel_added_item(query: types.CallbackQuery, state: FSMContext):
     user = await get_verified_user(query.from_user.id)
+    general_menu_kb = build_general_menu_keyboard(user.language)
     await state.finish()
     await bot.send_message(
         query.message.chat.id,
-        cancel_added_item_text[user.language]
+        cancel_added_item_text[user.language],
+        reply_markup=general_menu_kb
     )
     await bot.edit_message_reply_markup(
         query.message.chat.id,
@@ -252,6 +258,7 @@ async def clear_media(message: types.Message, state: FSMContext):
 
 async def save_item_media(message: types.Message, state: FSMContext):
     user = await get_verified_user(message.from_user.id)
+    general_menu_kb = build_general_menu_keyboard(user.language)
     user_data = json.loads(user.data) if user.data else {}
     async with state.proxy() as data:
         media = data.get('media', None)
@@ -277,9 +284,10 @@ async def save_item_media(message: types.Message, state: FSMContext):
                 await state.finish()
                 await bot.send_message(
                     message.from_user.id,
-                    quantity_item_media_text[user.language].format(total_media)
+                    quantity_item_media_text[user.language].format(total_media),
+                    reply_markup=general_menu_kb
                 )
-                #! NEXT FUNCTION !#    
+                await final_item_post(message, item.id)  
         else:
             await bot.send_message(
                 message.from_user.id,
@@ -311,9 +319,49 @@ async def text_validation_when_entering_media(message:types.Message):
         )
 
 
+#! --- Item Post Confirmation --- !#
+
+async def final_item_post(message: types.Message, item_id):
+    user = await get_verified_user(message.from_user.id)
+    item = session.query(Item).get(item_id)
+    item_name = item.name
+    column_name = get_column_by_language(user.language)
+    item_description = item.description
+    media = item.media
+    media_list = []
+    all_media = media["photos"] + media["videos"]
+    default_tag_obj = session.query(Tag).filter(Tag.status == 'default').first()
+    default_tag = getattr(default_tag_obj, column_name, None)
+    for i, media_id in enumerate(all_media):
+        if i == len(all_media) - 1:
+            if item_description is not None:
+                caption_text = item_form_post_with_description[user.language].format(
+                    item_name, item_description, default_tag
+                    )
+            else:
+                caption_text = item_form_post_no_description[user.language].format(item_name, default_tag)
+        else:
+            caption_text = None
+
+        if media_id in media["photos"]:
+            media_list.append(InputMediaPhoto(media=media_id, caption=caption_text))
+        else:
+            media_list.append(InputMediaVideo(media=media_id, caption=caption_text))
+        
+    await bot.send_media_group(chat_id=message.chat.id, media=media_list)
+    await bot.send_message(
+        chat_id=message.chat.id,
+        text=standart_decorational_line_text,
+        reply_markup=None
+    )
+
+#? --- Change Item Post --- ?#
+
+
 #? --- Item Tags --- ?#
 
 
+#? --- FINISH --- ?#
 
 
 

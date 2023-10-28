@@ -1,6 +1,13 @@
 {
     "tag":[
         {
+            "status":"default",
+            "name_uk": "#Некатегорізовано🔍",
+            "name_en": "#Uncategorized🔍",
+            "name_pl": "#Nieklasyfikowane🔍",
+            "name_ru": "#Некатегоризированное🔍"
+        },
+        {
             "status":"active",
             "name_en":"#📱Tech",
             "name_uk":"#📱Техніка",
