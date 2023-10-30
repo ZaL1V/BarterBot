@@ -13,6 +13,7 @@ from text import (
     invalid_media_type_text, media_count_msg_text, input_media_video_duration_error_text,
     quantity_item_media_text, media_is_not_loaded_text, clear_media_text,
     item_form_post_with_description, item_form_post_no_description, standart_decorational_line_text,
+    confirmation_create_item_post_text,
     )
 from ignore_values import should_ignore
 from user_valodation import get_verified_user
@@ -25,7 +26,8 @@ from keyboards import (
     build_general_menu_keyboard,
     build_cancel_added_item_keyboard,
     build_back_to_input_item_name_keyboard,
-    build_input_item_media_keyboard
+    build_input_item_media_keyboard,
+    build_final_item_post_keyboard
 )
 
 
@@ -277,7 +279,7 @@ async def save_item_media(message: types.Message, state: FSMContext):
                     name=item_name,
                     media=media,
                     description=item_description,
-                    status='active'
+                    status='not_confirmed'
                 )
                 session.add(item)
                 session.commit()
@@ -326,6 +328,7 @@ async def final_item_post(message: types.Message, item_id):
     item = session.query(Item).get(item_id)
     item_name = item.name
     column_name = get_column_by_language(user.language)
+    final_item_post_kb = build_final_item_post_keyboard(user.language, item_id)
     item_description = item.description
     media = item.media
     media_list = []
@@ -352,7 +355,7 @@ async def final_item_post(message: types.Message, item_id):
     await bot.send_message(
         chat_id=message.chat.id,
         text=standart_decorational_line_text,
-        reply_markup=None
+        reply_markup=final_item_post_kb
     )
 
 #? --- Change Item Post --- ?#
@@ -362,6 +365,23 @@ async def final_item_post(message: types.Message, item_id):
 
 
 #? --- FINISH --- ?#
+
+async def confirmation_create_item_post(query: types.CallbackQuery):
+    user = await get_verified_user(query.from_user.id)
+    item_id = query.data.split('#')[1]
+    item = session.query(Item).get(item_id)
+    item.status = 'active'
+    session.commit()
+    
+    await bot.edit_message_reply_markup(
+        query.message.chat.id,
+        query.message.message_id,
+        reply_markup=None
+    )
+    await bot.send_message(
+        query.message.chat.id,
+        confirmation_create_item_post_text[user.language],
+    )
 
 
 
@@ -446,3 +466,9 @@ def registr_handlers_user_adding_item(dp: Dispatcher):
         state=AddedItem.item_media,
     )
     #* --- Item Tags --- *#
+    
+    #* --- FINISH --- *#
+    dp.register_callback_query_handler(
+        confirmation_create_item_post,
+        Text(startswith='confirme_item_post#'),
+    )

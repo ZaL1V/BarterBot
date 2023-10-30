@@ -33,10 +33,12 @@ from .user_adding_item_text import (
     added_item_media_text, added_item_description_text, item_description_len_error_text,
     max_media_sent_text, invalid_media_type_text, media_count_msg_text,
     input_media_video_duration_error_text, quantity_item_media_text, media_is_not_loaded_text,
-    clear_media_text, item_form_post_with_description, item_form_post_no_description
+    clear_media_text, item_form_post_with_description, item_form_post_no_description,
+    confirmation_create_item_post_text
 )
 
 from .user_adding_item_btn_text import (
     cancel_addition_btn_text, back_to_input_item_name_btn_text, skip_item_description_btn_text,
-    save_media_btn_text, back_to_description_btn_text, reset_media_btn_text
+    save_media_btn_text, back_to_description_btn_text, reset_media_btn_text, add_tag_btn_text,
+    confirme_btn_text, change_btn_text, 
 )

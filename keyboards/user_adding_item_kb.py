@@ -3,7 +3,8 @@ from aiogram.types import (
 )
 from text import(
     cancel_addition_btn_text, back_to_input_item_name_btn_text, skip_item_description_btn_text,
-    save_media_btn_text, back_to_description_btn_text, reset_media_btn_text
+    save_media_btn_text, back_to_description_btn_text, reset_media_btn_text, add_tag_btn_text,
+    confirme_btn_text, change_btn_text
 )
 
 
@@ -46,3 +47,22 @@ def build_input_item_media_keyboard(language):
     input_item_media_kb = ReplyKeyboardMarkup(resize_keyboard=True)
     input_item_media_kb.add(save_btn).add(back_btn, clear_btn)
     return input_item_media_kb
+
+
+def build_final_item_post_keyboard(language, item_id):
+    confirme_btn = InlineKeyboardButton(
+        text=confirme_btn_text[language],
+        callback_data=f'confirme_item_post#{item_id}'
+    )
+    edit_btn = InlineKeyboardButton(
+        text=change_btn_text[language],
+        callback_data=f'edit_created_item_post#{item_id}'
+    )
+    tag_btn = InlineKeyboardButton(
+        text=add_tag_btn_text[language],
+        callback_data='add_tag_for_created_item_post#{item_id}'
+    )
+    kb_final_item_post = InlineKeyboardMarkup(resize_keyboard=True, row_width=2)
+    kb_final_item_post.add(confirme_btn).add(edit_btn, tag_btn)
+    return kb_final_item_post
+
