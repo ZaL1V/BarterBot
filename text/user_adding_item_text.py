@@ -170,3 +170,24 @@ confirmation_create_item_post_text = {
     'pl': "🎉 Post został pomyślnie utworzony! 🎉\n\nTeraz inni użytkownicy mogą go zobaczyć.🧐 W sekcji 'Moje przedmioty' w twoim osobistym kabiniecie możesz zarządzać swoim postem. 🔄",
     'ru': "🎉 Пост успешно создан! 🎉\n\nТеперь другие пользователи могут его видеть.🧐 В разделе 'Мои предметы' в вашем личном кабинете вы можете управлять своим постом. 🔄"
 }
+
+change_item_name_text = {
+    'uk': "Введіть нову назву 📝:",
+    'en': "Enter the new name 📝:",
+    'pl': "Wprowadź nową nazwę 📝:",
+    'ru': "Введите новое название 📝:"
+}
+
+change_item_description_text = {
+    'uk': "Введіть новий опис 📝:",
+    'en': "Enter the new description 📝:",
+    'pl': "Wprowadź nowy opis 📝:",
+    'ru': "Введите новое описание 📝:"
+}
+
+added_new_item_media_text = {
+    'uk': "📸 Додайте фотографію або коротке відео вашого предмета (не більше 3 медіафайлів)🎥",
+    'en': "📸 Add a photo or short video of your item (no more than 3 media files)🎥",
+    'pl': "📸 Dodaj zdjęcie lub krótki film przedstawiający Twój przedmiot (nie więcej niż 3 pliki multimedialne)🎥",
+    'ru': "📸 Добавьте фотографию или короткое видео вашего предмета (не более 3 медиафайлов)🎥"
+}

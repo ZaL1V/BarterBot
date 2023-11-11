@@ -12,5 +12,8 @@ from .user_adding_item_kb import (
     build_cancel_added_item_keyboard,
     build_back_to_input_item_name_keyboard,
     build_input_item_media_keyboard,
-    build_final_item_post_keyboard
+    build_final_item_post_keyboard,
+    build_change_item_post_menu_kayboard,
+    build_delete_item_description_keyboard,
+    build_change_item_media_keyboard
 )

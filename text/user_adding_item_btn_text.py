@@ -60,3 +60,31 @@ add_tag_btn_text = {
     'pl': 'Dodaj tag 🏷️',
     'ru': 'Добавить тег 🏷️'
 }
+
+change_item_name_btn_text = {
+    'uk': '🖊 Змінити назву',
+    'en': '🖊 Change name',
+    'pl': '🖊 Zmień nazwę',
+    'ru': '🖊 Изменить название'
+}
+
+change_item_description_btn_text = {
+    'uk': '📝 Змінити опис',
+    'en': '📝 Change description',
+    'pl': '📝 Zmień opis',
+    'ru': '📝 Изменить описание'
+}
+
+change_item_media_btn_text = {
+    'uk': '📸 Змінити медіа',
+    'en': '📸 Change media',
+    'pl': '📸 Zmień media',
+    'ru': '📸 Изменить медиа'
+}
+
+delete_description_btn_text = {
+    'uk': '❌ Видалити опис',
+    'en': '❌ Delete Description',
+    'pl': '❌ Usuń opis',
+    'ru': '❌ Удалить описание'
+}
