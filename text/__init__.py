@@ -1,10 +1,11 @@
 #=== UNIVERSAL ===#
 from .user_universal_text import (
-    input_required_msg_text, input_required_media_text, standart_decorational_line_text
+    input_required_msg_text, input_required_media_text, standart_decorational_line_text,
+    item_post_deleted_text
 )
 
 from .user_universal_btn_text import (
-    back_btn_text
+    back_btn_text, delete_btn_text
 )
 #=== REGISTRATION ===#
 from .user_registration_text import (

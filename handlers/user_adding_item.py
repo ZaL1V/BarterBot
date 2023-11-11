@@ -14,7 +14,7 @@ from text import (
     quantity_item_media_text, media_is_not_loaded_text, clear_media_text,
     item_form_post_with_description, item_form_post_no_description, standart_decorational_line_text,
     confirmation_create_item_post_text, change_item_name_text, change_item_description_text,
-    added_new_item_media_text
+    added_new_item_media_text, item_post_deleted_text
     )
 from ignore_values import should_ignore
 from user_valodation import get_verified_user
@@ -391,16 +391,16 @@ async def final_item_post(message: types.Message, item_id, query:types.CallbackQ
     media = item.media
     media_list = []
     all_media = media["photos"] + media["videos"]
-    default_tag_obj = session.query(Tag).filter(Tag.status == 'default').first()
-    default_tag = getattr(default_tag_obj, column_name, None)
+    # default_tag_obj = session.query(Tag).filter(Tag.status == 'default').first()
+    # default_tag = getattr(default_tag_obj, column_name, None)
     for i, media_id in enumerate(all_media):
         if i == len(all_media) - 1:
             if item_description is not None:
                 caption_text = item_form_post_with_description[user.language].format(
-                    item_name, item_description, default_tag
+                    item_name, item_description
                     )
             else:
-                caption_text = item_form_post_no_description[user.language].format(item_name, default_tag)
+                caption_text = item_form_post_no_description[user.language].format(item_name)
         else:
             caption_text = None
 
@@ -415,6 +415,26 @@ async def final_item_post(message: types.Message, item_id, query:types.CallbackQ
         text=standart_decorational_line_text,
         reply_markup=final_item_post_kb
     )
+
+
+async def delete_item_post(query: types.CallbackQuery):
+    user = await get_verified_user(query.from_user.id)
+    general_menu_kb = build_general_menu_keyboard(user.language)
+    item_id = query.data.split('#')[1]
+    item = session.query(Item).get(item_id)
+    item.status == 'deleted'
+    session.commit()
+    await bot.edit_message_reply_markup(
+        query.message.chat.id,
+        query.message.message_id,
+        reply_markup=None
+    )
+    await bot.send_message(
+        chat_id=query.message.chat.id,
+        text=item_post_deleted_text[user.language],
+        reply_markup=general_menu_kb
+    )
+
 
 #? --- Change Item Post --- ?#
 
@@ -664,3 +684,8 @@ def registr_handlers_user_adding_item(dp: Dispatcher):
         confirmation_create_item_post,
         Text(startswith='confirme_item_post#'),
     )
+    dp.register_callback_query_handler(
+        delete_item_post,
+        Text(startswith='delete_item_post#'),
+    )
+    

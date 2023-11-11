@@ -5,7 +5,8 @@ from text import(
     cancel_addition_btn_text, back_to_input_item_name_btn_text, skip_item_description_btn_text,
     save_media_btn_text, back_to_description_btn_text, reset_media_btn_text, add_tag_btn_text,
     confirme_btn_text, change_btn_text, back_btn_text, change_item_name_btn_text,
-    change_item_description_btn_text, change_item_media_btn_text, delete_description_btn_text
+    change_item_description_btn_text, change_item_media_btn_text, delete_description_btn_text,
+    delete_btn_text
 )
 
 
@@ -67,8 +68,8 @@ def build_final_item_post_keyboard(language, item_id):
         callback_data=f'edit_created_item_post#{item_id}'
     )
     tag_btn = InlineKeyboardButton(
-        text=add_tag_btn_text[language],
-        callback_data=f'add_tag_for_created_item_post#{item_id}'
+        text=delete_btn_text[language],
+        callback_data=f'delete_item_post#{item_id}'
     )
     kb_final_item_post = InlineKeyboardMarkup(resize_keyboard=True, row_width=2)
     kb_final_item_post.add(confirme_btn).add(edit_btn, tag_btn)

@@ -29,3 +29,10 @@ input_required_media_text = {
 }
 
 standart_decorational_line_text = '✧･ﾟ:✧･ﾟ:* ⠀⠀✨⠀⠀ *:･ﾟ✧:･ﾟ✧'
+
+item_post_deleted_text = {
+    'uk': '✅ Пост успішно видалено!',
+    'en': '✅ Post successfully deleted!',
+    'pl': '✅ Pomyślnie usunięto post!',
+    'ru': '✅ Пост успешно удален!',
+}
