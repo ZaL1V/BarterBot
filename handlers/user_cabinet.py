@@ -2,21 +2,23 @@ import json
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters import Text
+from sqlalchemy import or_
 from create_bot import dp, bot
 from text import (
     user_cabinet_menu_text, user_language_text, choose_a_language_text,
     change_city_user_cabinet_text, help_user_cabinet_text,
-    cancel_change_city_text
+    cancel_change_city_text, menu_selection_my_item_posts_text
     )
 from user_valodation import get_verified_user
 from .state_groups import RegistrationState
 from database import (
-    session, User
+    session, User, Item
     )
 from keyboards import (
     build_user_cabinet_menu_keyboard,
     build_choose_a_language_keyboard,
-    build_get_location_keyboard
+    build_get_location_keyboard,
+    build_menu_selection_my_item_posts_keyboard
 )
 
 
@@ -58,10 +60,38 @@ async def favorites_user_cabinet(query: types.CallbackQuery):
 
 async def my_items_user_cabinet(query: types.CallbackQuery):
     user = await get_verified_user(query.from_user.id)
+    items = session.query(Item
+    ).filter(Item.user == user.telegram_id
+    ).filter(or_(Item.status == 'active', Item.status == 'passive')
+    ).all()
+    menu_selection_my_item_posts_kb = build_menu_selection_my_item_posts_keyboard(user.language, items)
     await bot.send_message(
         query.message.chat.id,
-        '🛠У РОЗРОБЦІ⚙️'
+        menu_selection_my_item_posts_text[user.language].format(len(items)),
+        reply_markup=menu_selection_my_item_posts_kb
     )
+    await bot.edit_message_reply_markup(
+        query.message.chat.id,
+        query.message.message_id,
+        reply_markup=None
+    )
+
+
+async def change_my_item_posts_menu_page(query: types.CallbackQuery):
+    user = await get_verified_user(query.from_user.id)
+    current_page = int(query.data.split('#')[1])
+    items = session.query(Item
+    ).filter(Item.user == user.telegram_id
+    ).filter(or_(Item.status == 'active', Item.status == 'passive')
+    ).all()
+    menu_selection_my_item_posts_kb = build_menu_selection_my_item_posts_keyboard(user.language, items, current_page)
+    await bot.edit_message_reply_markup(
+        query.message.chat.id,
+        query.message.message_id,
+        reply_markup=menu_selection_my_item_posts_kb
+    )
+    
+
 
 #? ---  Incoming Requests --- ?#
 
@@ -165,6 +195,10 @@ def registr_handlers_user_cabinet(dp: Dispatcher):
     dp.register_callback_query_handler(
         my_items_user_cabinet,
         Text(startswith='my_items_user_cabinet')
+    )
+    dp.register_callback_query_handler(
+        change_my_item_posts_menu_page,
+        Text(startswith='change_my_item_posts_menu_page#')
     )
     #* --- Incoming Requests --- *#
     dp.register_callback_query_handler(

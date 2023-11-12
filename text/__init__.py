@@ -5,7 +5,7 @@ from .user_universal_text import (
 )
 
 from .user_universal_btn_text import (
-    back_btn_text, delete_btn_text
+    back_btn_text, delete_btn_text, next_btn_text
 )
 #=== REGISTRATION ===#
 from .user_registration_text import (
@@ -22,13 +22,13 @@ from .user_registration_btn_text import (
 from .user_cabinet_text import (
     user_cabinet_menu_text, user_language_text, successful_language_change_text,
     successful_city_change_text, change_city_user_cabinet_text, help_user_cabinet_text,
-    cancel_change_city_text
+    cancel_change_city_text, menu_selection_my_item_posts_text
 )
 
 from .user_cabinet_btn_text import (
     user_favorites_btn_text, my_items_btn_text, incoming_applications_btn_text,
     my_exchanges_btn_text, change_language_btn_text, change_city_btn_text,
-    help_btn_text
+    help_btn_text, page_btn_text
 )
 
 #=== ADDING ITEM ===#

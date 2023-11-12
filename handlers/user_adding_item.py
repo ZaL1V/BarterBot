@@ -422,7 +422,7 @@ async def delete_item_post(query: types.CallbackQuery):
     general_menu_kb = build_general_menu_keyboard(user.language)
     item_id = query.data.split('#')[1]
     item = session.query(Item).get(item_id)
-    item.status == 'deleted'
+    item.status = 'deleted'
     session.commit()
     await bot.edit_message_reply_markup(
         query.message.chat.id,

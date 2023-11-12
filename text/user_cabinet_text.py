@@ -106,3 +106,10 @@ cancel_change_city_text = {
     'pl': '🌆 Twoje miasto pozostaje bez zmian: [{}]. Wszystko w porządku! 🌟',
     'ru': '🌆 Ваш город остался без изменений: [{}]. Все хорошо! 🌟'
 }
+
+menu_selection_my_item_posts_text = {
+    'uk': 'У вас {} постів. Виберіть, який саме пост вам потрібний:',
+    'en': 'You have {} posts. Choose the post you need:',
+    'pl': 'Masz {} postów. Wybierz potrzebny ci post:',
+    'ru': 'У вас {} постов. Выберите нужный вам пост:',
+}

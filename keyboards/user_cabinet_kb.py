@@ -1,10 +1,11 @@
+from math import ceil
 from aiogram.types import (
     InlineKeyboardMarkup, InlineKeyboardButton
 )
 from text import(
     user_favorites_btn_text, my_items_btn_text, incoming_applications_btn_text,
     my_exchanges_btn_text, change_language_btn_text, change_city_btn_text,
-    help_btn_text
+    help_btn_text, back_btn_text, next_btn_text, page_btn_text
 )
 
 
@@ -47,3 +48,49 @@ def build_user_cabinet_menu_keyboard(language):
                             ).add(help_btn)
 
     return kb_choose_a_language
+
+
+def build_menu_selection_my_item_posts_keyboard(language, items, current_page=1, items_per_page=6):
+    kb_menu_selection_my_item_posts = InlineKeyboardMarkup(resize_keyboard=True)
+    
+    start_index = (current_page - 1) * items_per_page
+    end_index = start_index + items_per_page
+    current_items = items[start_index:end_index]
+
+    for item in current_items:
+        item_name_btn = InlineKeyboardButton(
+            text=item.name,
+            callback_data=f'manage_my_item_post#{item.id}'
+        )
+        kb_menu_selection_my_item_posts.add(item_name_btn)
+
+    total_pages = ceil(len(items) / items_per_page)
+    pagination_buttons = build_pagination_buttons(language, current_page, total_pages)
+    kb_menu_selection_my_item_posts.add(*pagination_buttons)
+
+    return kb_menu_selection_my_item_posts
+
+def build_pagination_buttons(language, current_page, total_pages):
+    pagination_buttons = []
+
+    if current_page > 1:
+        prev_button = InlineKeyboardButton(
+            text=back_btn_text[language],
+            callback_data=f'change_my_item_posts_menu_page#{current_page - 1}'
+        )
+        pagination_buttons.append(prev_button)
+
+    page_button = InlineKeyboardButton(
+        text=page_btn_text[language].format(current_page, total_pages),
+        callback_data='do_nothing'
+    )
+    pagination_buttons.append(page_button)
+
+    if current_page < total_pages:
+        next_button = InlineKeyboardButton(
+            text=next_btn_text[language],
+            callback_data=f'change_my_item_posts_menu_page#{current_page + 1}'
+        )
+        pagination_buttons.append(next_button)
+
+    return pagination_buttons
