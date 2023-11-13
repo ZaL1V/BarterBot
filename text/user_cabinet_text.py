@@ -135,3 +135,10 @@ confirm_delete_item_post_text = {
     'pl': 'Czy na pewno chcesz usunąć ten post?🧐',
     'ru': 'Вы уверены, что хотите удалить этот пост?🧐',
 }
+
+no_item_posts_text = {
+    'uk': 'У вас ще немає жодних постів. Щоб додати пост, натисніть кнопку "➕ Додати предмет".',
+    'en': "You don't have any posts yet. To add a post, press the button '➕ Add item'.",
+    'pl': "Nie masz jeszcze żadnych postów. Aby dodać post, naciśnij przycisk '➕ Dodaj przedmiot'.",
+    'ru': 'У вас пока нет постов. Чтобы добавить пост, нажмите кнопку "➕ Добавить предмет".',
+}

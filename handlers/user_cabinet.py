@@ -9,7 +9,7 @@ from text import (
     change_city_user_cabinet_text, help_user_cabinet_text, 
     cancel_change_city_text, menu_selection_my_item_posts_text,
     standart_decorational_line_text, item_post_disabled_text, item_post_enabled_text,
-    confirm_delete_item_post_text, item_post_deleted_text
+    confirm_delete_item_post_text, item_post_deleted_text, no_item_posts_text
     )
 from auxiliary import (
     get_verified_user, get_media_list, RegistrationState
@@ -67,14 +67,20 @@ async def my_items_user_cabinet(query: types.CallbackQuery):
     user = await get_verified_user(query.from_user.id)
     items = session.query(Item
     ).filter(Item.user == user.telegram_id
-    ).filter(or_(Item.status == 'active', Item.status == 'passive')
+    ).filter(or_(Item.status == 'active', Item.status == 'disabled')
     ).all()
-    menu_selection_my_item_posts_kb = build_menu_selection_my_item_posts_keyboard(user.language, items)
-    await bot.send_message(
-        query.message.chat.id,
-        menu_selection_my_item_posts_text[user.language].format(len(items)),
-        reply_markup=menu_selection_my_item_posts_kb
-    )
+    if len(items) < 1:
+        await bot.send_message(
+            query.message.chat.id,
+            no_item_posts_text[user.language]
+        )
+    else:
+        menu_selection_my_item_posts_kb = build_menu_selection_my_item_posts_keyboard(user.language, items)
+        await bot.send_message(
+            query.message.chat.id,
+            menu_selection_my_item_posts_text[user.language].format(len(items)),
+            reply_markup=menu_selection_my_item_posts_kb
+        )
     await bot.edit_message_reply_markup(
         query.message.chat.id,
         query.message.message_id,

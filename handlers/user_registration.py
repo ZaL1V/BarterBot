@@ -57,7 +57,7 @@ async def command_start(message: types.Message):
         general_menu_kb = build_general_menu_keyboard(user.language)
         await bot.send_message(
             message.chat.id,
-            'fff',
+            main_description_text[user.language],
             reply_markup=general_menu_kb
             ) 
 

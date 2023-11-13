@@ -24,7 +24,7 @@ from .user_cabinet_text import (
     user_cabinet_menu_text, user_language_text, successful_language_change_text,
     successful_city_change_text, change_city_user_cabinet_text, help_user_cabinet_text,
     cancel_change_city_text, menu_selection_my_item_posts_text, item_post_disabled_text,
-    item_post_enabled_text, confirm_delete_item_post_text
+    item_post_enabled_text, confirm_delete_item_post_text, no_item_posts_text
 )
 
 from .user_cabinet_btn_text import (
