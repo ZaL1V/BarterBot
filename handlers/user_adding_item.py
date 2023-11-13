@@ -16,10 +16,9 @@ from text import (
     confirmation_create_item_post_text, change_item_name_text, change_item_description_text,
     added_new_item_media_text, item_post_deleted_text
     )
-from ignore_values import should_ignore
-from user_valodation import get_verified_user
-from .state_groups import AddedItem
-from basic_tools import get_column_by_language
+from auxiliary import (
+    should_ignore, get_verified_user, AddedItem, get_media_list
+    )
 from database import (
     session, User, Item, Tag
     )
@@ -383,32 +382,8 @@ async def final_item_post(message: types.Message, item_id, query:types.CallbackQ
         user = await get_verified_user(query.from_user.id)
     else:
         user = await get_verified_user(message.from_user.id)
-    item = session.query(Item).get(item_id)
-    item_name = item.name
-    column_name = get_column_by_language(user.language)
     final_item_post_kb = build_final_item_post_keyboard(user.language, item_id)
-    item_description = item.description
-    media = item.media
-    media_list = []
-    all_media = media["photos"] + media["videos"]
-    # default_tag_obj = session.query(Tag).filter(Tag.status == 'default').first()
-    # default_tag = getattr(default_tag_obj, column_name, None)
-    for i, media_id in enumerate(all_media):
-        if i == len(all_media) - 1:
-            if item_description is not None:
-                caption_text = item_form_post_with_description[user.language].format(
-                    item_name, item_description
-                    )
-            else:
-                caption_text = item_form_post_no_description[user.language].format(item_name)
-        else:
-            caption_text = None
-
-        if media_id in media["photos"]:
-            media_list.append(InputMediaPhoto(media=media_id, caption=caption_text))
-        else:
-            media_list.append(InputMediaVideo(media=media_id, caption=caption_text))
-        
+    media_list = get_media_list(user.language, item_id)
     await bot.send_media_group(chat_id=message.chat.id, media=media_list)
     await bot.send_message(
         chat_id=message.chat.id,

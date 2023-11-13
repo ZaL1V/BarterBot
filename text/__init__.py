@@ -5,7 +5,8 @@ from .user_universal_text import (
 )
 
 from .user_universal_btn_text import (
-    back_btn_text, delete_btn_text, next_btn_text
+    back_btn_text, delete_btn_text, next_btn_text, disable_item_post_btn_text,
+    enable_item_post_btn_text, confirme_btn_text, change_btn_text
 )
 #=== REGISTRATION ===#
 from .user_registration_text import (
@@ -22,7 +23,8 @@ from .user_registration_btn_text import (
 from .user_cabinet_text import (
     user_cabinet_menu_text, user_language_text, successful_language_change_text,
     successful_city_change_text, change_city_user_cabinet_text, help_user_cabinet_text,
-    cancel_change_city_text, menu_selection_my_item_posts_text
+    cancel_change_city_text, menu_selection_my_item_posts_text, item_post_disabled_text,
+    item_post_enabled_text, confirm_delete_item_post_text
 )
 
 from .user_cabinet_btn_text import (
@@ -45,6 +47,6 @@ from .user_adding_item_text import (
 from .user_adding_item_btn_text import (
     cancel_addition_btn_text, back_to_input_item_name_btn_text, skip_item_description_btn_text,
     save_media_btn_text, back_to_description_btn_text, reset_media_btn_text, add_tag_btn_text,
-    confirme_btn_text, change_btn_text, change_item_name_btn_text, change_item_description_btn_text,
-    change_item_media_btn_text, delete_description_btn_text
+    change_item_name_btn_text, change_item_description_btn_text, change_item_media_btn_text,
+    delete_description_btn_text
 )

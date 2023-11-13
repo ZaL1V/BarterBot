@@ -6,11 +6,14 @@ from sqlalchemy import or_
 from create_bot import dp, bot
 from text import (
     user_cabinet_menu_text, user_language_text, choose_a_language_text,
-    change_city_user_cabinet_text, help_user_cabinet_text,
-    cancel_change_city_text, menu_selection_my_item_posts_text
+    change_city_user_cabinet_text, help_user_cabinet_text, 
+    cancel_change_city_text, menu_selection_my_item_posts_text,
+    standart_decorational_line_text, item_post_disabled_text, item_post_enabled_text,
+    confirm_delete_item_post_text, item_post_deleted_text
     )
-from user_valodation import get_verified_user
-from .state_groups import RegistrationState
+from auxiliary import (
+    get_verified_user, get_media_list, RegistrationState
+)
 from database import (
     session, User, Item
     )
@@ -18,7 +21,9 @@ from keyboards import (
     build_user_cabinet_menu_keyboard,
     build_choose_a_language_keyboard,
     build_get_location_keyboard,
-    build_menu_selection_my_item_posts_keyboard
+    build_menu_selection_my_item_posts_keyboard,
+    build_output_selected_post_keyboard,
+    build_my_item_post_delete_menu_keyboard
 )
 
 
@@ -82,7 +87,7 @@ async def change_my_item_posts_menu_page(query: types.CallbackQuery):
     current_page = int(query.data.split('#')[1])
     items = session.query(Item
     ).filter(Item.user == user.telegram_id
-    ).filter(or_(Item.status == 'active', Item.status == 'passive')
+    ).filter(or_(Item.status == 'active', Item.status == 'disabled')
     ).all()
     menu_selection_my_item_posts_kb = build_menu_selection_my_item_posts_keyboard(user.language, items, current_page)
     await bot.edit_message_reply_markup(
@@ -90,8 +95,90 @@ async def change_my_item_posts_menu_page(query: types.CallbackQuery):
         query.message.message_id,
         reply_markup=menu_selection_my_item_posts_kb
     )
-    
 
+
+async def output_selected_post(query: types.CallbackQuery):
+    user = await get_verified_user(query.from_user.id)
+    item_id = int(query.data.split('#')[1])
+    item = session.query(Item).get(item_id)
+    media_list = get_media_list(user.language, item_id)
+    await bot.send_media_group(chat_id=query.message.chat.id, media=media_list)
+    output_selected_post_kb = build_output_selected_post_keyboard(user.language, item_id, item.status)
+    await bot.send_message(
+        chat_id=query.message.chat.id,
+        text=standart_decorational_line_text,
+        reply_markup=output_selected_post_kb
+    )
+    await bot.edit_message_reply_markup(
+        query.message.chat.id,
+        query.message.message_id,
+        reply_markup=None
+    )
+
+
+async def change_my_item_post_status(query: types.CallbackQuery):
+    user = await get_verified_user(query.from_user.id)
+    item_id = int(query.data.split('#')[1])
+    item = session.query(Item).get(item_id)
+    if item.status == 'active':
+        item.status = 'disabled'
+        session.commit()
+        await bot.send_message(
+            query.message.chat.id,
+            item_post_disabled_text[user.language]
+        )
+    else:
+        item.status = 'active'
+        session.commit()
+        await bot.send_message(
+            query.message.chat.id,
+            item_post_enabled_text[user.language]
+        )
+    output_selected_post_kb = build_output_selected_post_keyboard(user.language, item_id, item.status)
+    await bot.edit_message_reply_markup(
+        query.message.chat.id,
+        query.message.message_id,
+        reply_markup=output_selected_post_kb
+    )
+
+
+async def my_item_post_delete_menu(query: types.CallbackQuery):
+    user = await get_verified_user(query.from_user.id)
+    item_id = int(query.data.split('#')[1])
+    my_item_post_delete_menu_kb = build_my_item_post_delete_menu_keyboard(user.language, item_id)
+    await bot.edit_message_text(
+        chat_id=query.message.chat.id,
+        message_id=query.message.message_id,
+        text=confirm_delete_item_post_text[user.language],
+        reply_markup=my_item_post_delete_menu_kb
+    )
+
+
+async def delete_my_item_post(query: types.CallbackQuery):
+    user = await get_verified_user(query.from_user.id)
+    item_id = int(query.data.split('#')[1])
+    item = session.query(Item).get(item_id)
+    item.status = 'deleted'
+    session.commit()
+    await bot.edit_message_text(
+        chat_id=query.message.chat.id,
+        message_id=query.message.message_id,
+        text=item_post_deleted_text[user.language],
+        reply_markup=None
+    )
+
+
+async def back_to_my_item_post_menu(query: types.CallbackQuery):
+    user = await get_verified_user(query.from_user.id)
+    item_id = int(query.data.split('#')[1])
+    item = session.query(Item).get(item_id)
+    output_selected_post_kb = build_output_selected_post_keyboard(user.language, item_id, item.status)
+    await bot.edit_message_text(
+        chat_id=query.message.chat.id,
+        message_id=query.message.message_id,
+        text=standart_decorational_line_text,
+        reply_markup=output_selected_post_kb
+    )
 
 #? ---  Incoming Requests --- ?#
 
@@ -199,6 +286,26 @@ def registr_handlers_user_cabinet(dp: Dispatcher):
     dp.register_callback_query_handler(
         change_my_item_posts_menu_page,
         Text(startswith='change_my_item_posts_menu_page#')
+    )
+    dp.register_callback_query_handler(
+        output_selected_post,
+        Text(startswith='manage_my_item_post#')
+    )
+    dp.register_callback_query_handler(
+        change_my_item_post_status,
+        Text(startswith='change_my_item_post_status#')
+    )
+    dp.register_callback_query_handler(
+        my_item_post_delete_menu,
+        Text(startswith='my_item_post_delete_menu#')
+    )
+    dp.register_callback_query_handler(
+        delete_my_item_post,
+        Text(startswith='delete_my_item_post#')
+    )
+    dp.register_callback_query_handler(
+        back_to_my_item_post_menu,
+        Text(startswith='back_to_my_item_post_menu#')
     )
     #* --- Incoming Requests --- *#
     dp.register_callback_query_handler(

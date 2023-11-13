@@ -6,7 +6,9 @@ from .user_registration_kb import (
 
 from .user_cabinet_kb import (
     build_user_cabinet_menu_keyboard,
-    build_menu_selection_my_item_posts_keyboard
+    build_menu_selection_my_item_posts_keyboard,
+    build_output_selected_post_keyboard,
+    build_my_item_post_delete_menu_keyboard
 )
 
 from .user_adding_item_kb import (

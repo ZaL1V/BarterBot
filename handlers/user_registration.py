@@ -10,9 +10,10 @@ from text import (
     input_user_city_type_error_text, main_description_text, successful_language_change_text,
     successful_city_change_text, input_required_msg_text
     )
-from ignore_values import should_ignore
-from user_valodation import get_verified_user
-from .state_groups import RegistrationState
+from auxiliary import (
+    should_ignore, get_verified_user, RegistrationState,
+    get_location_by_city, get_location_by_coordinates
+)
 from database import (
     session, User
     )
@@ -21,7 +22,6 @@ from keyboards import (
     build_get_location_keyboard,
     build_general_menu_keyboard
 )
-from get_location import get_location_by_city, get_location_by_coordinates
 
 
 async def command_start(message: types.Message):
